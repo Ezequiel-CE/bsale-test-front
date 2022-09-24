@@ -1,4 +1,9 @@
-import { setLoading, createGallery, createCategories } from "./domScripts";
+import {
+  setLoading,
+  createGallery,
+  createCategories,
+  setError,
+} from "./domScripts";
 
 //ELEMENTS
 export const mainApp = document.querySelector("#main");
@@ -24,6 +29,7 @@ const loadAllProducts = async () => {
     console.log(data);
     createGallery(data.products, "All products");
   } catch (error) {
+    setError();
     console.log(error);
   }
 };
@@ -45,6 +51,7 @@ const loadAllCategories = async () => {
 
     createCategories(data.categories);
   } catch (error) {
+    setError();
     console.log(error);
   }
 };
@@ -70,6 +77,7 @@ const searchForProduct = async (name) => {
 
     createGallery(data.products, `Results for "${name}"`);
   } catch (error) {
+    setError();
     console.log(error);
   }
 };
@@ -93,6 +101,7 @@ export const getByCategory = async (id, name) => {
 
     createGallery(data.products, `${name} category`);
   } catch (error) {
+    setError();
     console.log(error);
   }
 };
