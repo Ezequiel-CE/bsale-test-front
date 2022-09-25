@@ -3,6 +3,7 @@ import {
   createGallery,
   createCategories,
   setError,
+  createShoppingCart,
 } from "./domScripts";
 
 //ELEMENTS
@@ -11,6 +12,27 @@ const searchForm = document.querySelector("#search-form");
 const input = document.querySelector("#search-input");
 const homeBtn = document.querySelector("#home-btn");
 export const dropDown = document.querySelector("#categories-drop");
+export const canvas = document.querySelector("#canvas-body");
+
+//STATE
+
+let shoppingCart = [];
+
+export const addTocart = (product) => {
+  const cartProduct = { ...product, amount: 1 };
+
+  if (shoppingCart.find((pro) => pro.id === cartProduct.id)) {
+    const existingProductID = shoppingCart.findIndex(
+      (pro) => pro.id === cartProduct.id
+    );
+    shoppingCart[existingProductID].amount++;
+  } else {
+    shoppingCart = [...shoppingCart, cartProduct];
+  }
+  console.log(cartProduct.id);
+
+  createShoppingCart(shoppingCart);
+};
 
 /**
  * Function for fetching all products
