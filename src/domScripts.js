@@ -1,4 +1,13 @@
-import { mainApp, dropDown, getByCategory, addTocart, canvas } from "./index";
+import {
+  mainApp,
+  dropDown,
+  getByCategory,
+  addTocart,
+  canvas,
+  removeFromCart,
+  addProductInCart,
+  removeProductInCart,
+} from "./index";
 import placeholder from "./assets/default.jpg";
 
 //LOADING PAGE
@@ -22,8 +31,7 @@ export const setLoading = () => {
 const createCards = (products) => {
   const cardsDomArr = products.map((product) => {
     const card = document.createElement("div");
-    card.classList.add("col");
-    card.classList.add("my-3");
+    card.classList.add("col", "my-3");
 
     const cardContent = `
             <div class="card p-2 h-100 d-flex flex-column justify-content-between">
@@ -55,7 +63,6 @@ const createCards = (products) => {
     const buyBtn = card.querySelector("#cardBtn");
 
     buyBtn.addEventListener("click", () => {
-      debugger;
       addTocart(product);
     });
 
@@ -65,12 +72,19 @@ const createCards = (products) => {
   return cardsDomArr;
 };
 
-// SHOPPING CART
+// SHOPPING CART PRODUCTS
 
-export const createShoppingCart = (productArr) => {
-  const cart = productArr
-    .map((pro) => {
-      const cartString = `<div class="mb-4 d-flex gap-3 justify-content-between align-items-center">
+export const createShoppingCartProducts = (productArr) => {
+  const cartProductsEl = productArr.map((pro) => {
+    const cartProduct = document.createElement("div");
+    cartProduct.classList.add(
+      "mb-4",
+      "d-flex",
+      "gap-3",
+      "justify-content-between",
+      "align-items-center"
+    );
+    const cartString = `
     <div >
       <img
         src="${pro.url_image}"
@@ -84,26 +98,76 @@ export const createShoppingCart = (productArr) => {
       <p class="text-black  text-center" style="font-size:15px">${pro.name}</p>
     </div>
     <div class=" d-flex justify-content-center">
-      <i class="bi bi-dash p-1" role="button"></i>
+      <i class="bi bi-dash p-1" role="button" id="subBtn"></i>
   
       <p class="m-0 p-1">${pro.amount}</p>
   
-      <i class="bi bi-plus p-1" role="button"></i>
+      <i class="bi bi-plus p-1" role="button" id="addBtn" ></i>
     </div>
     <div class="">
       <h6 class="mb-0">$${pro.amount * pro.price}</h6>
     </div>
-    <div class="">
-      <i class="bi bi-x" role="button"></i>
-    </div>
+    
+      <i class="bi bi-x" id="removeBtn" role="button"></i>
+    
+  
+ `;
+    cartProduct.innerHTML = cartString;
+
+    const removeBtn = cartProduct.querySelector("#removeBtn");
+    const addBtn = cartProduct.querySelector("#addBtn");
+    const subtracBtn = cartProduct.querySelector("#subBtn");
+
+    subtracBtn.addEventListener("click", () => {
+      removeProductInCart(pro);
+    });
+
+    addBtn.addEventListener("click", () => {
+      addProductInCart(pro);
+    });
+
+    removeBtn.addEventListener("click", () => {
+      removeFromCart(pro);
+    });
+
+    return cartProduct;
+  });
+
+  return cartProductsEl;
+};
+
+//SHOPPING CARTS
+
+export const createShoppingCart = (products) => {
+  const totalPrice = products.reduce(
+    (acc, currentProd) => acc + currentProd.price * currentProd.amount,
+    0
+  );
+
+  const cartWithItems = `<h3 class="mb-5 pt-2 text-center fw-bold text-uppercase">Your products</h3> 
+  <div id="cartContent"></div>
+  <hr class="my-4">
+  <h4 class="mb-3 pt-2 text-center fw-bold text-uppercase">Total: $${totalPrice}</h4> 
+  <div id="checkBtn" class="d-flex justify-content-center">
+    <button type="button" class="btn btn-success">Checkout</button>
   </div>
-  <hr class="my-4" />`;
+  `;
 
-      return cartString;
-    })
-    .join("");
+  if (products.length > 0) {
+    canvas.innerHTML = cartWithItems;
+    const cartElements = createShoppingCartProducts(products);
+    const checkBtn = canvas.querySelector("#checkBtn");
+    cartElements.forEach((el) => {
+      const content = canvas.querySelector(`#cartContent`);
+      content.appendChild(el);
+    });
 
-  canvas.innerHTML = cart;
+    checkBtn.addEventListener("click", () => {
+      alert("Im not gonna implement this :D");
+    });
+  } else {
+    canvas.innerHTML = `<h5 class="mb-5 pt-2 text-center fw-bold">Add products to your cart</h5>`;
+  }
 };
 
 //GALLERY

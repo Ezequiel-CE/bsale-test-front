@@ -18,10 +18,15 @@ export const canvas = document.querySelector("#canvas-body");
 
 let shoppingCart = [];
 
+/**
+ * Function for adding carts to shoppingCart
+ */
+
 export const addTocart = (product) => {
   const cartProduct = { ...product, amount: 1 };
 
   if (shoppingCart.find((pro) => pro.id === cartProduct.id)) {
+    //update cart
     const existingProductID = shoppingCart.findIndex(
       (pro) => pro.id === cartProduct.id
     );
@@ -29,7 +34,47 @@ export const addTocart = (product) => {
   } else {
     shoppingCart = [...shoppingCart, cartProduct];
   }
-  console.log(cartProduct.id);
+
+  createShoppingCart(shoppingCart);
+};
+
+/**
+ * Function for deleting carts to shoppingCart
+ */
+
+export const removeFromCart = (product) => {
+  shoppingCart = shoppingCart.filter((pro) => pro.id !== product.id);
+  createShoppingCart(shoppingCart);
+};
+
+/**
+ * Function for adding product in shopping cart
+ */
+
+export const addProductInCart = (product) => {
+  if (shoppingCart.find((pro) => pro.id === product.id)) {
+    //update cart
+    const existingProductID = shoppingCart.findIndex(
+      (pro) => pro.id === product.id
+    );
+    shoppingCart[existingProductID].amount++;
+  }
+  createShoppingCart(shoppingCart);
+};
+
+export const removeProductInCart = (product) => {
+  if (shoppingCart.find((pro) => pro.id === product.id)) {
+    //update cart
+    const existingProductID = shoppingCart.findIndex(
+      (pro) => pro.id === product.id
+    );
+    shoppingCart[existingProductID].amount--;
+
+    //if amount is 0 delete element
+    if (shoppingCart[existingProductID].amount === 0) {
+      shoppingCart = shoppingCart.filter((pro) => pro.id !== product.id);
+    }
+  }
 
   createShoppingCart(shoppingCart);
 };
