@@ -17,6 +17,29 @@ export const canvas = document.querySelector("#canvas-body");
 //STATE
 
 let shoppingCart = [];
+export let sort = "id";
+export let order = "DESC";
+export let category = null;
+
+const resetSortOrder = () => {
+  sort = "id";
+  order = "DESC";
+};
+
+/**
+ * Function for fetching the sorted products
+ */
+
+export const changeSortAndOrder = (newSort, newOrder) => {
+  sort = newSort || sort;
+  order = newOrder || "DESC";
+
+  if (category) {
+    getByCategory(category.id, category.name, sort, order);
+  } else {
+    loadAllProducts(sort, order);
+  }
+};
 
 /**
  * Function for adding carts to shoppingCart
@@ -83,10 +106,19 @@ export const removeProductInCart = (product) => {
  * Function for fetching all products
  */
 
-const loadAllProducts = async () => {
+export const loadAllProducts = async (sort = null, order = null) => {
   setLoading();
+  category = null;
+  let response;
   try {
-    const response = await fetch("http://localhost:5000/api/products");
+    if (sort && order) {
+      response = await fetch(
+        "http://localhost:5000/api/products?" +
+          new URLSearchParams({ sort: sort, order: order })
+      );
+    } else {
+      response = await fetch("http://localhost:5000/api/products");
+    }
 
     if (!response.ok) {
       throw new Error("cant get products");
@@ -107,6 +139,7 @@ const loadAllProducts = async () => {
 
 const loadAllCategories = async () => {
   setLoading();
+
   try {
     const response = await fetch("http://localhost:5000/api/category");
 
@@ -155,10 +188,20 @@ const searchForProduct = async (name) => {
  * @param {string} name
  */
 
-export const getByCategory = async (id, name) => {
+export const getByCategory = async (id, name, sort = null, order = null) => {
   setLoading();
+  //set category
+  category = { id, name };
+  let response;
   try {
-    const response = await fetch("http://localhost:5000/api/category/" + id);
+    if (sort && order) {
+      response = await fetch(
+        `http://localhost:5000/api/category/${id}?` +
+          new URLSearchParams({ sort: sort, order: order })
+      );
+    } else {
+      response = await fetch("http://localhost:5000/api/category/" + id);
+    }
 
     if (!response.ok) {
       throw new Error("cant fetch category");
@@ -174,7 +217,7 @@ export const getByCategory = async (id, name) => {
 };
 
 const init = () => {
-  loadAllProducts();
+  loadAllProducts("id", "DESC");
   loadAllCategories();
 };
 
@@ -188,4 +231,7 @@ searchForm.addEventListener("submit", (e) => {
   input.value = "";
 });
 
-homeBtn.addEventListener("click", loadAllProducts);
+homeBtn.addEventListener("click", () => {
+  resetSortOrder();
+  loadAllProducts("id", "DESC");
+});

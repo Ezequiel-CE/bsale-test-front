@@ -7,6 +7,9 @@ import {
   removeFromCart,
   addProductInCart,
   removeProductInCart,
+  changeSortAndOrder,
+  sort,
+  order,
 } from "./index";
 import placeholder from "./assets/default.jpg";
 
@@ -41,7 +44,7 @@ const createCards = (products) => {
       }" onerror="this.onerror=null;this.src='${placeholder}'" alt="Card image cap">
       ${
         product.discount > 0
-          ? '<span class="badge bg-danger ms-2 position-absolute top-10 start-0">-10%</span>'
+          ? `<span class="badge bg-danger ms-2 position-absolute top-10 start-0">-${product.discount}%</span>`
           : ""
       }
       </div>
@@ -173,10 +176,45 @@ export const createShoppingCart = (products) => {
 //GALLERY
 
 export const createGallery = (products, title) => {
+  console.log(order);
   const galleryString = `
   <div class="text-center container py-5 ">
-          <h4 class="mt-5 mb-5"><strong>${title}</strong></h4>
+          <h4 class="mt-5 mb-3"><strong>${title}</strong></h4>
         </div>
+        
+        <div class="d-flex justify-content-end gap-3">
+          <div class="dropdown">
+          <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Sort by
+          </button>
+          <ul class="dropdown-menu">
+            <li class="dropdown-item ${
+              sort === "Name" ? "active" : ""
+            }" role="button" id="nameBtn" >Name</li>
+            <li class="dropdown-item ${
+              sort === "Price" ? "active" : ""
+            }" role="button" id="priceBtn" >Price</li>
+            <li class="dropdown-item ${
+              sort === "Discount" ? "active" : ""
+            }" role="button" id="discountBtn" >Discount</li>
+          </ul>
+        </div>
+        <div class="dropdown">
+          <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Order
+          </button>
+          <ul class="dropdown-menu">
+            <li class="dropdown-item ${
+              order === "ASC" ? "active" : ""
+            }" role="button" id="ascBtn" >ASC</li>
+            <li class="dropdown-item ${
+              order === "DESC" ? "active" : ""
+            }" role="button" id="descBtn" >DESC</li>
+            
+          </ul>
+        </div>
+        </div>
+        <hr class="my-4">
         <div class="container">
   <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3  row-cols-lg-4" id="gallery">
   
@@ -184,7 +222,29 @@ export const createGallery = (products, title) => {
 </div>`;
   mainApp.innerHTML = galleryString;
 
-  const gallery = document.querySelector("#gallery");
+  //Elements
+  const gallery = mainApp.querySelector("#gallery");
+  const nameBtn = mainApp.querySelector("#nameBtn");
+  const priceBtn = mainApp.querySelector("#priceBtn");
+  const discountBtn = mainApp.querySelector("#discountBtn");
+  const ascBtn = mainApp.querySelector("#ascBtn");
+  const descBtn = mainApp.querySelector("#descBtn");
+
+  nameBtn.addEventListener("click", () => {
+    changeSortAndOrder(nameBtn.textContent);
+  });
+  priceBtn.addEventListener("click", () => {
+    changeSortAndOrder(priceBtn.textContent);
+  });
+  discountBtn.addEventListener("click", () => {
+    changeSortAndOrder(discountBtn.textContent);
+  });
+  ascBtn.addEventListener("click", () => {
+    changeSortAndOrder(null, ascBtn.textContent);
+  });
+  descBtn.addEventListener("click", () => {
+    changeSortAndOrder(null, descBtn.textContent);
+  });
 
   const cardsArr = createCards(products);
 
@@ -192,6 +252,8 @@ export const createGallery = (products, title) => {
     gallery.appendChild(card);
   });
 };
+
+//CATEGORY
 
 export const createCategories = (categories) => {
   console.log(categories);
