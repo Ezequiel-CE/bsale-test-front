@@ -20,8 +20,10 @@ import placeholder from "./assets/default.jpg";
 
 export const setLoading = () => {
   mainApp.innerHTML = ` <div class="d-flex justify-content-center align-items-center h-100">
-  <div class="spinner-border" role="status">
-    <span class="visually-hidden">Loading...</span>
+  <div class="position-fixed top-50 start-50 translate-middle-x  ">
+  <div class="spinner-border " role="status">
+  <span class="visually-hidden">Loading...</span>
+  </div>
   </div>
 </div>`;
 };
