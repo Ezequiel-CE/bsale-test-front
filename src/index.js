@@ -157,7 +157,6 @@ const loadAllCategories = async () => {
     createCategories(data.categories);
   } catch (error) {
     setError();
-    console.log(error);
   }
 };
 
@@ -187,7 +186,6 @@ const searchForProduct = async (name) => {
     }
   } catch (error) {
     setError();
-    console.log(error);
   }
 };
 
@@ -221,7 +219,6 @@ export const getByCategory = async (id, name, sort = null, order = null) => {
     createGallery(data.products, `${name} category`);
   } catch (error) {
     setError();
-    console.log(error);
   }
 };
 
