@@ -4,6 +4,7 @@ import {
   createCategories,
   setError,
   createShoppingCart,
+  setNoResult,
 } from "./domScripts";
 
 //ELEMENTS
@@ -20,8 +21,13 @@ let shoppingCart = [];
 export let sort = "id";
 export let order = "DESC";
 export let category = null;
+export let searchProduct = null;
 
-const resetSortOrder = () => {
+export const resetSearch = () => {
+  searchProduct = null;
+};
+
+export const resetSortOrder = () => {
   sort = "id";
   order = "DESC";
 };
@@ -175,7 +181,11 @@ const searchForProduct = async (name) => {
 
     const data = await response.json();
 
-    createGallery(data.products, `Results for "${name}"`);
+    if (data.products.length > 0) {
+      createGallery(data.products, `Results for "${name}"`);
+    } else {
+      setNoResult();
+    }
   } catch (error) {
     setError();
     console.log(error);
@@ -227,11 +237,14 @@ init();
 
 searchForm.addEventListener("submit", (e) => {
   e.preventDefault();
+  if (input.value.length < 1) return;
+  searchProduct = input.value;
   searchForProduct(input.value);
   input.value = "";
 });
 
 homeBtn.addEventListener("click", () => {
   resetSortOrder();
+  resetSearch();
   loadAllProducts("id", "DESC");
 });

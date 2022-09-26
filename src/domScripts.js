@@ -10,6 +10,9 @@ import {
   changeSortAndOrder,
   sort,
   order,
+  resetSortOrder,
+  searchProduct,
+  resetSearch,
 } from "./index";
 import placeholder from "./assets/default.jpg";
 
@@ -176,45 +179,50 @@ export const createShoppingCart = (products) => {
 //GALLERY
 
 export const createGallery = (products, title) => {
-  console.log(order);
   const galleryString = `
   <div class="text-center container py-5 ">
           <h4 class="mt-5 mb-3"><strong>${title}</strong></h4>
         </div>
-        
-        <div class="d-flex justify-content-end gap-3">
-          <div class="dropdown">
-          <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Sort by
-          </button>
-          <ul class="dropdown-menu">
-            <li class="dropdown-item ${
-              sort === "Name" ? "active" : ""
-            }" role="button" id="nameBtn" >Name</li>
-            <li class="dropdown-item ${
-              sort === "Price" ? "active" : ""
-            }" role="button" id="priceBtn" >Price</li>
-            <li class="dropdown-item ${
-              sort === "Discount" ? "active" : ""
-            }" role="button" id="discountBtn" >Discount</li>
-          </ul>
-        </div>
+
+        ${
+          !searchProduct
+            ? `<div class="d-flex justify-content-end gap-3">
         <div class="dropdown">
-          <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Order
-          </button>
-          <ul class="dropdown-menu">
-            <li class="dropdown-item ${
-              order === "ASC" ? "active" : ""
-            }" role="button" id="ascBtn" >ASC</li>
-            <li class="dropdown-item ${
-              order === "DESC" ? "active" : ""
-            }" role="button" id="descBtn" >DESC</li>
-            
-          </ul>
-        </div>
-        </div>
-        <hr class="my-4">
+        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          Sort by
+        </button>
+        <ul class="dropdown-menu">
+          <li class="dropdown-item ${
+            sort === "Name" ? "active" : ""
+          }" role="button" id="nameBtn" >Name</li>
+          <li class="dropdown-item ${
+            sort === "Price" ? "active" : ""
+          }" role="button" id="priceBtn" >Price</li>
+          <li class="dropdown-item ${
+            sort === "Discount" ? "active" : ""
+          }" role="button" id="discountBtn" >Discount</li>
+        </ul>
+      </div>
+      <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          Order
+        </button>
+        <ul class="dropdown-menu">
+          <li class="dropdown-item ${
+            order === "ASC" ? "active" : ""
+          }" role="button" id="ascBtn" >ASC</li>
+          <li class="dropdown-item ${
+            order === "DESC" ? "active" : ""
+          }" role="button" id="descBtn" >DESC</li>
+          
+        </ul>
+      </div>
+      </div>
+      <hr class="my-4">`
+            : ""
+        }
+        
+        
         <div class="container">
   <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3  row-cols-lg-4" id="gallery">
   
@@ -224,27 +232,30 @@ export const createGallery = (products, title) => {
 
   //Elements
   const gallery = mainApp.querySelector("#gallery");
-  const nameBtn = mainApp.querySelector("#nameBtn");
-  const priceBtn = mainApp.querySelector("#priceBtn");
-  const discountBtn = mainApp.querySelector("#discountBtn");
-  const ascBtn = mainApp.querySelector("#ascBtn");
-  const descBtn = mainApp.querySelector("#descBtn");
 
-  nameBtn.addEventListener("click", () => {
-    changeSortAndOrder(nameBtn.textContent);
-  });
-  priceBtn.addEventListener("click", () => {
-    changeSortAndOrder(priceBtn.textContent);
-  });
-  discountBtn.addEventListener("click", () => {
-    changeSortAndOrder(discountBtn.textContent);
-  });
-  ascBtn.addEventListener("click", () => {
-    changeSortAndOrder(null, ascBtn.textContent);
-  });
-  descBtn.addEventListener("click", () => {
-    changeSortAndOrder(null, descBtn.textContent);
-  });
+  if (!searchProduct) {
+    const nameBtn = mainApp.querySelector("#nameBtn");
+    const priceBtn = mainApp.querySelector("#priceBtn");
+    const discountBtn = mainApp.querySelector("#discountBtn");
+    const ascBtn = mainApp.querySelector("#ascBtn");
+    const descBtn = mainApp.querySelector("#descBtn");
+
+    nameBtn.addEventListener("click", () => {
+      changeSortAndOrder(nameBtn.textContent);
+    });
+    priceBtn.addEventListener("click", () => {
+      changeSortAndOrder(priceBtn.textContent);
+    });
+    discountBtn.addEventListener("click", () => {
+      changeSortAndOrder(discountBtn.textContent);
+    });
+    ascBtn.addEventListener("click", () => {
+      changeSortAndOrder(null, ascBtn.textContent);
+    });
+    descBtn.addEventListener("click", () => {
+      changeSortAndOrder(null, descBtn.textContent);
+    });
+  }
 
   const cardsArr = createCards(products);
 
@@ -269,6 +280,8 @@ export const createCategories = (categories) => {
   links.forEach((link) => {
     link.addEventListener("click", (e) => {
       const { id, textContent } = link;
+      resetSortOrder();
+      resetSearch();
       getByCategory(id, textContent);
     });
   });
@@ -294,4 +307,18 @@ export const setError = () => {
   errbtn.addEventListener("click", () => {
     window.location.reload();
   });
+};
+
+export const setNoResult = () => {
+  const string = `<div class="d-flex align-items-center justify-content-center vh-100">
+  <div class="text-center">
+      <p class="fs-3">No products found.</p>
+      <p class="lead">
+          Please try again
+        </p>
+      
+  </div>
+</div>`;
+
+  mainApp.innerHTML = string;
 };
