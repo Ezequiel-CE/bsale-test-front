@@ -267,7 +267,6 @@ export const createGallery = (products, title) => {
 //CATEGORY
 
 export const createCategories = (categories) => {
-  console.log(categories);
   const categoriesString = categories
     .map((cat) => {
       return `<li class="dropdown-item" role="button" id="${cat.id}">${cat.name}</li>`;

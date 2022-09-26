@@ -131,11 +131,10 @@ export const loadAllProducts = async (sort = null, order = null) => {
     }
 
     const data = await response.json();
-    console.log(data);
+
     createGallery(data.products, "All products");
   } catch (error) {
     setError();
-    console.log(error);
   }
 };
 
