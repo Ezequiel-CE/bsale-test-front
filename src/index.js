@@ -22,6 +22,7 @@ export let sort = "id";
 export let order = "DESC";
 export let category = null;
 export let searchProduct = null;
+const url = "https://bsale-test-back-1.herokuapp.com/api";
 
 export const resetSearch = () => {
   searchProduct = null;
@@ -119,8 +120,7 @@ export const loadAllProducts = async (sort = null, order = null) => {
   try {
     if (sort && order) {
       response = await fetch(
-        "http://localhost:5000/api/products?" +
-          new URLSearchParams({ sort: sort, order: order })
+        `${url}/products?` + new URLSearchParams({ sort: sort, order: order })
       );
     } else {
       response = await fetch("http://localhost:5000/api/products");
@@ -146,7 +146,7 @@ const loadAllCategories = async () => {
   setLoading();
 
   try {
-    const response = await fetch("http://localhost:5000/api/category");
+    const response = await fetch(`${url}/category`);
 
     if (!response.ok) {
       throw new Error("cant get category");
@@ -169,8 +169,7 @@ const searchForProduct = async (name) => {
   setLoading();
   try {
     const response = await fetch(
-      "http://localhost:5000/api/products/search?" +
-        new URLSearchParams({ productName: name })
+      `${url}/products/search?` + new URLSearchParams({ productName: name })
     );
 
     if (!response.ok) {
@@ -203,11 +202,11 @@ export const getByCategory = async (id, name, sort = null, order = null) => {
   try {
     if (sort && order) {
       response = await fetch(
-        `http://localhost:5000/api/category/${id}?` +
+        `${url}/category/${id}?` +
           new URLSearchParams({ sort: sort, order: order })
       );
     } else {
-      response = await fetch("http://localhost:5000/api/category/" + id);
+      response = await fetch(`${url}/category/` + id);
     }
 
     if (!response.ok) {
